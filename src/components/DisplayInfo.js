@@ -1,25 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Displayinfor.scss"
-class DisplayInfo extends React.Component{
-    state = {
-        isShowListUser :true
+
+const DisplayInfor = (props) =>{
+    const {listUser} = props;
+    const [isShowHideListUser, setShowHideListUser] = useState(true);
+    const handleShowHideListUser= ()=>{
+        setShowHideListUser(!isShowHideListUser)
     }
-    handleShowHide=(event)=>{
-        this.setState({
-            isShowListUser: !this.state.isShowListUser
-        })
-       
-    }
-    render(){
-    const {listUser} = this.props;
+
+    useEffect(()=>{
+        console.log("use effect");
+        if(listUser.length === 5)
+        console.log("your user = 5");
+    },[listUser])
+
         return(
             <div className="display-infor-container">
-                <div >
-                    <p onClick={()=>{
-                        this.handleShowHide()
-                    }}> {this.state.isShowListUser === true? "Hide list user" : "Show list user"} </p>
-                </div>
-                {this.state.isShowListUser && 
+              <div>
+                  
+                  <span onClick={()=>{
+                      handleShowHideListUser()
+                  }}>{isShowHideListUser === true? "Hide List User" : "Show List User"}</span>
+                  </div>  
+                {isShowHideListUser && 
                 <div>
                    { listUser.map((item)=>{
                     return(
@@ -27,13 +30,17 @@ class DisplayInfo extends React.Component{
 
                                     <p>ten toi la: {item.name}</p>
                                     <p>tuoi toi la: {item.age}</p>
-                                </div>
+                            <button onClick={()=>{
+                                props.handleDeleteUser(item.id)
+                            }}>DELETE</button>
+                        </div>
+
                     )
                     })}
                 </div>}
             </div>
         )
     }
-}
 
-export default DisplayInfo;
+
+export default DisplayInfor;
