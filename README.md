@@ -1,5 +1,6 @@
 #Node.js v14.17.0
-
+<!-- Package.json, lưu trữ các thư viện -->
+<!-- phải đọc trước khi tham gia vào dự án -->
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
