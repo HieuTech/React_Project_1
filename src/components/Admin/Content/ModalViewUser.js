@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
@@ -6,10 +6,10 @@ import { FiFilePlus } from "react-icons/fi";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { postCreateNewUser } from '../../../services/apiService';
-
-const ModalCreateUser = (props)  => {
-    const {show,setShow} = props
+import { updateUser } from '../../../services/apiService';
+import _ from "lodash"
+const ModalUpdateUser = (props)  => {
+    const {showView,setShowView,dataUpdate,fetchListUser,resetUpdateData} = props
 
 
   const [email, setEmail] = useState("");
@@ -19,14 +19,26 @@ const ModalCreateUser = (props)  => {
   const [image, setImage] = useState("");
   const [previewImage, setPreviewImage] = useState("");
 
-  const handleClose =()=>{
-    setShow(false);
+
+  useEffect(()=>{
+        if(!_.isEmpty(dataUpdate)){
+        setEmail(dataUpdate.email);
+        setUsername(dataUpdate.username);
+        setRole(dataUpdate.role);
+        setImage("");
+        setPreviewImage(`data:image/jpeg;base64,${dataUpdate.image}`)}
+  },[dataUpdate])
+
+  
+  const handleClose = async()=>{
+    setShowView(false);
     setEmail("");
     setPassword("");
     setUsername("");
     setRole("");
     setPreviewImage("")
-
+    await fetchListUser()
+    resetUpdateData()
   }
 
     const handleUpLoadImage = (event)=>{
@@ -39,67 +51,26 @@ const ModalCreateUser = (props)  => {
         setImage(event.target.files[0])
 
     }
-    const validateEmail = (email) => {
-      return String(email)
-        .toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        );
-    };
-      //validate
-      const createNewUser = async ()=>{
-        const isValidEmail = validateEmail(email);
-        if(!isValidEmail){
-            toast.error('Email invalid', {
-                position: "top-center",
-                });
-            return;
-        }
-        if(!password){
-            toast.error('password invalid',{
-                position:"top-center",
-            })
-            return;
-        }
-        //call apis
-        let data = await postCreateNewUser(email,password,user,role,image)
-        console.log("Here data error:" , data);
-        if( data&& data.EC === 0){
-          toast.success(data,{position:"top-center"});
-          handleClose();
-          await props.fetchListUser(); 
-      }
+ 
+        //validate
   
-      if(data && data.EC !== 0){
-          toast.error(data,{
-              position:"top-center",
-          })
-      }
-  }
-
   return (
     <>
-      <Modal size="xl" show={show} onHide={handleClose}
+      <Modal size="xl" show={showView} onHide={handleClose}
         backdrop="static" className='modal-add-user'
 >   
         <Modal.Header closeButton>
-          <Modal.Title >Add new user</Modal.Title>
+          <Modal.Title >View User</Modal.Title>
         </Modal.Header>
         <Modal.Body><form className="row g-3">
   <div className="col-md-6">
     <label  className="form-label">Email</label>
-    <input type="email" className="form-control" value={email}
-    onChange={(event)=>{
-        setEmail(event.target.value);
-    }}
+    <input type="email" disabled className="form-control" value={email}
     />
   </div>
   <div className="col-md-6">
     <label  className="form-label">Password</label>
-    <input type="password" className="form-control" value={password}
-    onChange={(event)=>{
-        setPassword(event.target.value)
-    }} />
+    <input type="password" disabled className="form-control" value={password}></input>
   </div>
   
   <div className="col-md-6">
@@ -148,14 +119,9 @@ const ModalCreateUser = (props)  => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <ToastContainer/>
-          <Button variant="primary" onClick={()=>{createNewUser()
-}}>
-            Save 
-          </Button>
         </Modal.Footer>
       </Modal>
     </>
   )
 }
-export default ModalCreateUser;
+export default ModalUpdateUser;
