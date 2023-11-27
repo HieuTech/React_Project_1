@@ -1,6 +1,20 @@
-const TableUser = (props) => {
-  const { listUser, handleClickBtnUpdate, handleViewUser, handleClickDelete } =
-    props;
+import { useState } from "react";
+import ReactPaginate from "react-paginate";
+
+const TableUserPaginate = (props) => {
+  const {
+    listUser,
+    handleClickBtnUpdate,
+    handleViewUser,
+    handleClickDelete,
+    fetchListUserWithPaginate,
+    pageCount,
+  } = props;
+  const handlePageClick = (event) => {
+    const numb = event.selected +1 ;
+    fetchListUserWithPaginate(numb);
+    console.log(`User requested page number ${event.selected}, `);
+  };
 
   const renderList = () => {
     return listUser.length === 0 ? (
@@ -44,7 +58,6 @@ const TableUser = (props) => {
       })
     );
   };
-
   return (
     <>
       <table className="table table-hover ">
@@ -57,10 +70,24 @@ const TableUser = (props) => {
             <th scope="col">Action</th>
           </tr>
         </thead>
-        <tbody>{renderList()}</tbody>
+        <tbody>
+            {renderList()}
+        </tbody>
       </table>
+     <div className="table-user-paginate">
+     <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={3}
+        pageCount={pageCount}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+        forcePage={props.currentPage -1}
+      />
+     </div>
     </>
   );
 };
 
-export default TableUser;
+export default TableUserPaginate;

@@ -1,8 +1,6 @@
 .manage-user-container{
     .users-content{
     width: 1320px;
-
-        
     }
     .btn-addNew{
         display: flex;
@@ -18,6 +16,25 @@
             margin-left: 10px;
         }
     }
+    .table-user-paginate ul{
+        display: flex;
+        justify-content: center;
+        list-style-type: none;
+    }
+    .table-user-paginate li{
+        margin: 10px 20px;
+        :hover{
+            background-color: violet;
+        }
+        :active{
+            background-color: pink;
+        }
+        a{
+            text-decoration: none;
+            color: black;
+        }
+    }
+    
 }
 
 .modal-add-user{
